@@ -1,0 +1,19 @@
+---
+
+- name: install svn service
+  yum: name=subversion state=latest
+- name: delete /etc/init.d/svnserve
+  file: path=/etc/init.d/svnserve state=absent
+- name: copy svn to /etc/init.d/
+  copy: src=svn dest=/etc/init.d/svn mode=0744
+- name: create svn dir
+  file: path={{item}} state=directory owner=root group=root mode=0755
+  with_items:
+      - /data/svn
+      - /data/svn/conf
+- name: copy autorized files
+  copy: src=authz dest=/data/svn/conf/authz
+- name: copy pasword files
+  copy: src=passwd dest=/data/svn/conf/passwd
+- name: restart svn service
+  service: name=svn state=restarted
