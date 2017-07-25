@@ -1,0 +1,18 @@
+---
+
+- name: install vsftpd server
+  yum: name=vsftpd state=latest
+- name: copy ftp config on el6
+  copy: src=vsftpd-el6.conf dest=/etc/vsftpd/vsftpd.conf mode=0644
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == "6"
+- name: copy ftp config on el7
+  copy: src=vsftpd-el7.conf dest=/etc/vsftpd/vsftpd.conf mode=0644
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == "7"
+- name: create ftp dir
+  file: path=/data/ftproot state=directory owner=ftpadmin group=ftp mode=0755
+- name: create ftpuser ftpadmin
+  user: name=ftpadmin shell=/sbin/nologin groups=ftp append=yes home=/data/ftproot
+- name: set password
+  shell: /bin/echo baige1981 |/usr/bin/passwd --stdin ftpadmin
+- name: restart ftpserver
+  service: name=vsftpd state=restarted
