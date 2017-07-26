@@ -1,0 +1,40 @@
+---
+
+- name: install jdk
+  yum: name={{ item }} state=present
+  with_items:
+    - java-1.8.0-openjdk
+    - java-1.8.0-openjdk-devel
+- name: create download dir
+  file: path=/data/rpm state=directory
+- name: Make sure a project group
+  group: name={{ project }} state=present
+- name: create tomcat user
+  user: "name={{ project }} group={{ project }} createhome=no system=yes"
+  sudo: true
+- name: change tomcat_user password
+  command: echo "{{ project }}:{{ project }}"|chpasswd
+- name: download Tomcat tarball
+  get_url:
+    url: "{{ tomcat_download_address }}"
+    dest: "{{ tomcat_download_path }}"
+- name: make installation directory for Tomcat
+  file:
+    path: "/data/server/{{ project }}/tomcat"
+    state: directory
+    owner: "{{ project }}"
+    group: "{{ project }}"
+    mode: "u=rwx,g=rx,o="
+- name: extract Tomcat archive into installation directory
+  unarchive:
+    src: "{{ tomcat_download_path }}/{{ tomcat_file }}.tar.gz"
+    dest: "/data/server/{{ project}}"
+    owner: "{{ project }}"
+    group: "{{ project }}"
+    copy: no
+- name: copy server.xml file
+  template: src=server.xml.j2 dest=/data/server/{{ project }}/{{ tomcat_file }}/conf/server.xml
+- name: copy tomcat-users.xml file
+  template: src=tomcat-users.xml.j2 dest=/data/server/{{ project }}/{{ tomcat_file }}/conf/tomcat-users.xml
+- name: start tomcat
+  command: /data/server/{{ project }}/{{ tomcat_file }}/bin/startup.sh

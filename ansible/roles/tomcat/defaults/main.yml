@@ -1,0 +1,18 @@
+#tomcat_download_address: http://mirror.bit.edu.cn/apache/tomcat/tomcat-8/v8.0.45/bin/apache-tomcat-8.0.45.tar.gz
+tomcat_download_address: http://192.168.47.200/base/apache-tomcat-8.0.45.tar.gz
+tomcat_download_path: /data/rpm
+tomcat_file: apache-tomcat-8.0.45
+http_port: 8080
+https_port: 8443
+ejb_port: 8009
+shutdown_port: 8005
+
+tomcat_manager_hash_password: false
+tomcat_manager_users:
+- user: admin
+  pass: admin
+  roles: admin-gui,manager-gui
+
+tomcat_manager_roles:
+- admin-gui
+- manager-gui

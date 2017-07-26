@@ -1,0 +1,77 @@
+---
+#- name: hostname set
+#  hostname: name={{host_name}}
+- name: service stop
+  service: name={{item}} state=stopped
+  with_items:
+    - iptables
+    - postfix
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == "6"
+- name: service stop
+  service: name={{item}} state=stopped
+  with_items:
+    - postfix
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == "7"
+- name: delete default yum repo file
+  file: path=/etc/yum.repos.d state=absent  
+- name: mkdir /etc/yum.repos.d
+  file: path=/etc/yum.repos.d state=directory  
+- name: install local yum repo
+  copy: src=local.repo dest=/etc/yum.repos.d/local.repo mode=0755
+- name: yum update cache
+  command: yum clean all
+- name: yum make cache
+  command: yum makecache
+- name: import epel pki centos 6
+  command: rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == "6"
+- name: import epel pki centos 7
+  command: rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == "7"
+#- name: upgrade all packages
+#  yum: name=* state=latest
+- name: yum install tools
+  yum: name={{ item }} state=latest
+  with_items:
+#    - git
+#    - bridge-utils
+    - bind-utils
+#    - bison
+#    - flex
+#    - libxml2
+#    - libxml2-devel
+    - libselinux-python
+    - lrzsz
+    - gcc
+#    - screen
+    - wget
+    - vim
+    - unzip
+    - ntpdate
+    - dmidecode 
+    - make 
+    - autoconf 
+    - automake 
+    - cmake
+    - gcc-c++
+#    - openssl 
+#    - openssl-devel 
+#    - ncurses 
+#    - ncurses-devel
+#    - lvm2 
+#    - parted 
+    - setuptool 
+#    - ntsysv 
+#    - lvm2-devel
+- name: disabled selinux
+  selinux: state=disabled
+- name: linux kernel optmise
+  copy: src=sysctl.conf dest=/etc/sysctl.conf
+#- name: ali ssh config change
+#  copy: src=/data/ansible/init/files/ssh_config dest=/etc/ssh_config
+#- name: ali ssh config change
+#  copy: src=/data/ansible/init/files/sshd_config dest=/etc/sshd_config
+- name: copy init script file
+  copy: src=centos_init.sh dest=/tmp/centos_init.sh mode=0744
+- name: exec optimise scripts
+  shell: /tmp/centos_init.sh       

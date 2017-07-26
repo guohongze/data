@@ -1,0 +1,6 @@
+---
+project: guohz
+http_port: 8081
+https_port: 8444
+ejb_port: 8010
+shutdown_port: 8006
