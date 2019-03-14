@@ -1,6 +1,6 @@
 ---
-#- name: hostname set
-#  hostname: name={{host_name}}
+- name: hostname set
+  hostname: name={{host_name}}
 - name: service stop
   service: name={{item}} state=stopped
   with_items:

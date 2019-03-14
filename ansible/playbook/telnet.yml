@@ -1,0 +1,6 @@
+- hosts: host101
+  remote_user: root
+  gather_facts: false
+  tasks:
+    - name: yum telnet
+      yum: name=telnet state=present

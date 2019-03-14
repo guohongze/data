@@ -1,6 +1,5 @@
 ---
-project: guohz
-http_port: 8081
-https_port: 8444
-ejb_port: 8010
-shutdown_port: 8006
+user: tomcat
+password: 1234567
+webport: 8080
+shutdown: 8005

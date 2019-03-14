@@ -1,4 +1,4 @@
-- hosts: localhost
+- hosts: cmdb
   remote_user: root
   gather_facts: false
   tasks:

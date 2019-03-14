@@ -1,0 +1,11 @@
+---
+  - name: copy src file to remote servers
+    copy: src=adminset_agent.tar.gz dest={{ datasrc }}
+
+  - name: untar src package
+    unarchive: src={{ datasrc }}adminset_agent.tar.gz dest={{ datasrc }} remote_src=yes
+
+  - name: install adminset agent
+    shell: /bin/bash {{ datasrc }}adminset_agent/install.sh && touch /tmp/adminsetagent_installed
+    args:
+      creates: /tmp/adminsetagent_installed

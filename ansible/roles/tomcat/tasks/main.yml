@@ -10,7 +10,7 @@
 - name: Make sure a project group
   group: name={{ project }} state=present
 - name: create tomcat user
-  user: "name={{ project }} group={{ project }} createhome=no system=yes"
+  user: "name={{ project }} group={{ project }} password={{ project}} home=/data/server/{{ project}} shell=/bin/bash"
   sudo: true
 - name: change tomcat_user password
   command: echo "{{ project }}:{{ project }}"|chpasswd
@@ -20,7 +20,7 @@
     dest: "{{ tomcat_download_path }}"
 - name: make installation directory for Tomcat
   file:
-    path: "/data/server/{{ project }}/tomcat"
+    path: "/data/server/{{ project }}/{{ tomcat_file }}"
     state: directory
     owner: "{{ project }}"
     group: "{{ project }}"
